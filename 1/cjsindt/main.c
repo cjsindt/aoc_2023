@@ -31,12 +31,10 @@ int isnumber(char *line, int index, char lr) {
     for(int i = 0; i < 10; i++) {  
         if(lr == 'r') { // from right to left
             for(int j = map[i].len - 1; j >= 0; j--) {
-                printf("Index: %c Map: %c \n", line[index], map[i].str[j]);
-                printf("Ind: %d Map: %d\n", ind, j);
-                if(j == 0) {
-                    return map[i].num;
-                }
                 if(line[ind] == map[i].str[j]){
+                    if(j == 0) {
+                        return map[i].num;
+                    }
                     ind--;
                 } else {
                     ind = index;
@@ -45,10 +43,10 @@ int isnumber(char *line, int index, char lr) {
             }
         } else if(lr == 'l') {  // from left to right
             for(int j = 0; j < map[i].len; j++) {
-                if(j == map[i].len - 1) {
-                    return map[i].num;
-                }
-                if(line[ind] == map[i].str[j]) {
+                if(line[ind] == map[i].str[j]) {\
+                    if(j == map[i].len - 1) {
+                        return map[i].num;
+                    }
                     ind++;
                 } else {
                     ind = index;
