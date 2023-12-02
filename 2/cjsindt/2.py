@@ -18,9 +18,37 @@ def determine_possibility(game):
     
     return True
 
+
+# return a tuple (red, green, blue) containing minimal values
+def minimize_game(game):
+    output = [0, 0, 0]
+    for s in game:
+        for c in game[s]:
+            if c == 'red':
+                if game[s][c] > output[0]:
+                    output[0] = game[s][c]
+            if c == 'green':
+                if game[s][c] > output[1]:
+                    output[1] = game[s][c]
+            if c == 'blue':
+                if game[s][c] > output[2]:
+                    output[2] = game[s][c]
+
+    return output
+
+# determines the power of a game 
+# i.e. the minimal values of red, green and blue multiplied together
+def power(game):
+    prod = 1
+    for i in game:
+        prod = prod * i
+
+    return prod
+
 def main():
     games = {}
-    total = 0
+    total_1 = 0
+    total_2 = 0
 
     # parse input
     with open('input.txt', 'r') as f:
@@ -37,10 +65,15 @@ def main():
     # determine impossible games
     for g in games:
         if determine_possibility(games[g]):
-            total = total + g
+            total_1 = total_1 + g
 
-    print(total)
+    print(f'Part 1: {total_1}')
 
+    # determine minimal games
+    for g in games:
+        total_2 = total_2 + power(minimize_game(games[g]))
+
+    print(f'Part 2: {total_2}')
 
 if __name__ == '__main__':
     main()
