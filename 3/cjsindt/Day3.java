@@ -30,19 +30,28 @@ public class Day3 {
             return;
         }
 
-        // sum nums
-        int sum = 0;
-        for (Integer i : findNums(input)) {
-            sum += i;
+        // sum part nums
+        int partNumSum = 0;
+        for (Integer i : findPartNums(input)) {
+            partNumSum += i;
         }
-        
-        System.out.println("Sum of part nums: " + sum);
+
+        System.out.println("Sum of part nums: " + partNumSum);
+
+        // sum gear ratios
+        int gearRatioSum = 0;
+        for (Integer i : findGearRatios(input)) {
+            gearRatioSum += i;
+        }
+
+        System.out.println("Sum of gear ratios: " + gearRatioSum);
     }
 
-    private static List<Integer> findNums(List<String> input){
+    private static List<Integer> findPartNums(List<String> input){
+        List<Integer> nums = new ArrayList<>();
+        
         Pattern numRegex = Pattern.compile("\\d+");
         Pattern symRegex = Pattern.compile("[^.0-9]");
-        List<Integer> nums = new ArrayList<>();
 
         // loop through each line in input (Each element of list)
         for (int i = 0; i < input.size(); i++) {
@@ -83,5 +92,59 @@ public class Day3 {
         }
 
         return nums;
+    }
+
+    private static List<Integer> findGearRatios(List<String> input) {
+        List<Integer> ratios = new ArrayList<>();
+
+        Pattern gearRegex = Pattern.compile("[*]");    
+        Pattern numRegex = Pattern.compile("\\d+");
+
+        // loop through each line in input (Each element of list)
+        for (int i = 0; i < input.size(); i++) {
+
+            // find each *
+            Matcher gearMatcher = gearRegex.matcher(input.get(i));
+            while (gearMatcher.find()) {
+                int left = gearMatcher.start() - 1 > 0 ? gearMatcher.start() - 1 : 0;
+                int right = gearMatcher.end() + 1 <= input.size() ? gearMatcher.end() + 1 : input.size();
+                List<Integer> numsTouchingGear = new ArrayList<>();
+
+                // find all nums that could be next to the gear
+                Matcher numMatcher = numRegex.matcher(input.get(i));
+                while (numMatcher.find()) {
+                    // ranges overlap; num touching gear
+                    if (numMatcher.start() < right && numMatcher.end() > left) {
+                        numsTouchingGear.add(Integer.parseInt(numMatcher.group()));
+                    }
+                }
+
+                if (i > 0) {
+                    numMatcher = numRegex.matcher(input.get(i - 1));
+                    while (numMatcher.find()) {
+                        // ranges overlap; num touching gear
+                        if (numMatcher.start() < right && numMatcher.end() > left) {
+                            numsTouchingGear.add(Integer.parseInt(numMatcher.group()));
+                        }
+                    }
+                }
+
+                if (i < input.size() - 1) {
+                    numMatcher = numRegex.matcher(input.get(i + 1));
+                    while (numMatcher.find()) {
+                        // ranges overlap; num touching gear
+                        if (numMatcher.start() < right && numMatcher.end() > left) {
+                            numsTouchingGear.add(Integer.parseInt(numMatcher.group()));
+                        }
+                    }
+                }
+
+                if (numsTouchingGear.size() == 2) {
+                    ratios.add(numsTouchingGear.get(0) * numsTouchingGear.get(1));
+                }
+
+            }
+        }
+        return ratios;
     }
 }
